@@ -1,6 +1,6 @@
 # Readme 
 This is the second assignment of *Data Processing On Modern Hardware*.
-Please have a look at the assignment sheet you find on the course's webpage or in our Moodle.
+Please have a look at the assignment sheet `assignment2_2025.pdf`.
 
 ## Introduction
 - **Fork** this repo to do the assignment.
