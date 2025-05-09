@@ -36,7 +36,9 @@ protected:
 
     /* Size of concrete operator object; Needs to be set in constructor of derived classes. */
     size_t opSize = 0;
-    
+
+    /* block size for vector-at-a-time processing */
+    static constexpr size_t BLOCK_SIZE = 1024;
 
 public:
 
@@ -106,6 +108,13 @@ public:
      * Operator-at-a-time interface
      */
     virtual Relation getRelation() = 0;
+
+    /**
+     * Vector-at-a-time interface
+     */
+    virtual void openVec() = 0;
+    virtual Relation* nextVec() = 0;
+    virtual void closeVec() = 0;
 };
 
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 //---------------------------------------------------------------------------
 inline std::string getDir(const std::string &file)

@@ -16,6 +16,8 @@
 #include <pthread.h>
 #include <thread>
 #include <cstdlib>
+#include <cstring>
+
 
 #include "BaseOperator.h"
 #include "DBData.h"
@@ -44,6 +46,17 @@ public:
 
     static void vector ( RelOperator* node, Relation* result ) {
         // TODO: Execute query plan with Vector-at-a-time and write result.
+        node->openVec();
+        Relation* r = node->nextVec();
+        while ( r != nullptr ) {
+            result->len = r->len;
+            result->capacity = r->capacity;
+            memcpy(result->r, r->r, r->len * sizeof(Tuple));
+            freeRelation(*r);
+
+            r = node->nextVec();
+        }
+        node->closeVec();
     }
 };
 
@@ -79,6 +92,13 @@ public:
     virtual void close();
 
     virtual Relation getRelation();
+
+    /**
+     * Vector-at-a-time interface
+     */
+    virtual void openVec();
+    virtual Relation* nextVec();
+    virtual void closeVec();
 };
 
 
@@ -111,6 +131,13 @@ public:
     virtual void close();
 
     virtual Relation getRelation();
+
+    /**
+     * Vector-at-a-time interface
+     */
+    virtual void openVec();
+    virtual Relation* nextVec();
+    virtual void closeVec();
 };
 
 
@@ -148,4 +175,11 @@ public:
     virtual void close();
 
     virtual Relation getRelation();
+
+    /**
+     * Vector-at-a-time interface
+     */
+    virtual void openVec();
+    virtual Relation* nextVec();
+    virtual void closeVec();
 };
