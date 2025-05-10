@@ -12,12 +12,8 @@
 
 #pragma once
 
-#include <iostream>
-#include <pthread.h>
-#include <thread>
 #include <cstdlib>
 #include <cstring>
-
 
 #include "BaseOperator.h"
 #include "DBData.h"
@@ -45,17 +41,17 @@ public:
     }
 
     static void vector ( RelOperator* node, Relation* result ) {
-        // TODO: Execute query plan with Vector-at-a-time and write result.
         node->openVec();
         Relation* r = node->nextVec();
+        size_t totalLen = 0;
         while ( r != nullptr ) {
-            result->len = r->len;
-            result->capacity = r->capacity;
-            memcpy(result->r, r->r, r->len * sizeof(Tuple));
+            memcpy(result->r + totalLen, r->r, r->len * sizeof(Tuple));
+            totalLen += r->len;
             freeRelation(*r);
 
             r = node->nextVec();
         }
+        result->len = totalLen;
         node->closeVec();
     }
 };
