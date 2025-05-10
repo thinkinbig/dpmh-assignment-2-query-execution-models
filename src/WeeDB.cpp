@@ -54,18 +54,18 @@ public:
   * @brief Output header line for csv
   */
 void csvHeader () {
-    std::cout << std::endl << "RELATION_LEN, tVolcano, tOperatorAtATime" << std::endl;
+    std::cout << std::endl << "RELATION_LEN, tVolcano, tOperatorAtATime, tVectorAtATime" << std::endl;
 }
 
 
 /**
   * @brief Output timings of different execution models as csv line
   */
-void csvStats ( double tVolc, double tOp ) {
+void csvStats ( double tVolc, double tOp, double tVec ) {
     std::cout << std::fixed;
     std::cout << std::setprecision(1);
     std::cout <<  RELATION_LEN << ", " << tVolc 
-              << ", " << tOp << std::endl;
+              << ", " << tOp << ", " << tVec << std::endl;
 }
 
 
@@ -108,21 +108,35 @@ double execOperatorAtATime ( RelOperator* root ) {
 
 
 /**
+  * @brief Execute query plan given by root with Vector-at-a-time
+  */
+double execVectorAtATime ( RelOperator* root ) { 
+    Timer tVec = Timer();
+    Relation resultRelation = root->getRelation();
+    printRelation ( resultRelation );
+    return tVec.get();
+}
+
+
+
+
+/**
   * @brief Parse arguments, generate/read relation, build query plan, and execute.
     The different execution models are selected by arguments or by default we execute all.
   */
 int main ( int argc, char* argv[] ) {
 
     // parse arguments
-    bool doVol=false, doOp=false;
+    bool doVol=false, doOp=false, doVec=false;
     std::string args;
     for (int i = 1; i < argc; ++i) {
         args = args.append ( argv[i] );
     }
     if ( args.find ( "vol" ) != std::string::npos ) doVol = true;
     if ( args.find ( "op" ) != std::string::npos ) doOp = true;
-    if ( ! ( doVol || doOp ) ) {
-        doVol = true; doOp = true;
+    if ( args.find ( "vec" ) != std::string::npos ) doVec = true;
+    if ( ! ( doVol || doOp || doVec ) ) {
+        doVol = true; doOp = true; doVec = true;
     }
 
     // load or generate relation data
@@ -170,13 +184,14 @@ int main ( int argc, char* argv[] ) {
     );
 */    
 
-    double tVol=0.0, tOp=0.0;
+    double tVol=0.0, tOp=0.0, tVec=0.0;
 
     if ( doVol )  tVol  = execVolcano ( root );
     if ( doOp )   tOp  = execOperatorAtATime ( root );
+    if ( doVec )  tVec  = execVectorAtATime ( root );
 
     csvHeader ();
-    csvStats ( tVol, tOp );
+    csvStats ( tVol, tOp, tVec );
 
     root->deletePlan();
 }

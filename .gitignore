@@ -57,3 +57,13 @@ Makefile
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+plots/
+
+.conda/
+.venv/
+.idea/
+.vscode/
+
+test/data/
+test/blocksize_result.csv

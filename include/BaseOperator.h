@@ -38,7 +38,7 @@ protected:
     size_t opSize = 0;
 
     /* block size for vector-at-a-time processing */
-    static constexpr size_t BLOCK_SIZE = 1024;
+    static constexpr size_t BLOCK_SIZE = 4096;
 
 public:
 
