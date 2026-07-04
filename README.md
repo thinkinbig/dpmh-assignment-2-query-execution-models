@@ -1,76 +1,36 @@
-# Readme 
-This is the second assignment of *Data Processing On Modern Hardware*.
-Please have a look at the assignment sheet `assignment2_2025.pdf`.
+# DPMH Assignment 2: Query Execution Models
 
-## Introduction
-- **Fork** this repo to do the assignment.
-- There's a GitLab CI that will check if all required files exist.
-- Passing the CI does not mean that you get the exam point! We'll double-check uploads.
+**Data Processing on Modern Hardware** — TUM
 
-## Part 1
- - Compare the tuple-at-a-time, operator-at-a-time execution models.
- - Use a profiler to monitor your system resources.
+A hands-on comparison of **classic and modern query execution models** in database systems: from Volcano-style iteration to vectorized and push-based execution.
 
-## Part 2: Vector-at-a-time
+## Topics Covered
 
-Implement vector-at-a-time interface for DBMS operators
+- **Volcano model** (Iterator): row-at-a-time, pull-based
+- **Vectorized execution**: batch processing for cache efficiency
+- **Push-based model**: data-driven, JIT-friendly
+- **Code generation**: compiling queries to native code
+- Throughput comparison across models
 
-## Part 3: Report
-
-Visualise and briefly explain your results in a one page report (report.pdf).
-
-## Files you need to modify:
-* `BaseOperator.h`
-* `Operators.h`
-* `OperatorsVector.cpp`
-* `WeeDB.cpp`
-
-Hint: take a look at `primitives.h`
-
-## Description of this project:
-
-This is a program to analyze different database execution
-engines. Compile by executing the command
-```
-mkdir build
-cd build
-cmake ../
-make
-```
-
-To execute the program run from within the build-directory:
-```
-./weedb
-```
-or use `./weedb vol` or `./weedb op` to use specific execution
-techniques, i.e. the former for tuple-at-a-time (Volcano) and the
-latter for operator-at-a-time. The program output contains query 
-timing and results.
-
-The database is kept in the memory mapped file `db.dat`, which is
-generated on the first run. This allows consecutive executions 
-without data re-generation. To free space or to generate new data 
-you can simply delete the file. To use the program without memory 
-mapped files, you can adjust the functionality from the file
-`DBData.cpp` to work on plain arrays.
-
-For query execution, you can specify different queries as 
-chain/tree of relational operators. E.g. for the query
+## Structure
 
 ```
-SELECT SUM(x) FROM rel WHERE x < 10
+├── src/           # C++ source code
+├── include/       # Headers
+├── test/          # Unit tests
+├── lib/           # External libraries
+├── report.pdf     # Report with analysis
+└── CMakeLists.txt # Build system
 ```
 
-you can execute the query plan
-```
-RelOperator* root = new AggregationOp ( AggregationOp::SUM,
-  new SelectionOp ( SelectionOp::PredicateType::SMALLER, 10,
-      new ScanOp ( rel.r, rel.len )
-  )
-);
+## Build & Run
+
+```bash
+mkdir build && cd build
+cmake .. && make
+./query_execution_models
 ```
 
-Note: In case you encounter any errors regarding cmake, you might need to run:
-```
-pip install cmake
-```
+## Key Results
+
+Quantitative comparison showing the performance gap between iterator-at-a-time, vectorized, and code-generated execution across different query types and data sizes.
